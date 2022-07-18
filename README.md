@@ -3,7 +3,7 @@ In this application, we are experimenting with the use of smartphone acceleratio
 
 Scan the QR code below with your smartphone.
 
-
+![QR_159097](https://user-images.githubusercontent.com/46724121/179550042-c5772a5c-4390-46e1-ae83-4061a9c92336.png)
 
 # Reference
 - [mdn | 端末の方向の検出](https://developer.mozilla.org/ja/docs/Web/Events/Detecting_device_orientation)
