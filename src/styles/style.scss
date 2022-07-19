@@ -6,15 +6,46 @@
 	height: 100%;
 }
 
-.text {
-	position: relative;
+.orientation-permission {
+	position: absolute;
+	top: 0;
+	left: 0;
 	width: 100%;
 	height: 100%;
+	background-color: #000a;
+	backdrop-filter: blur(20px);
 
 	display: flex;
 	justify-content: center;
 	align-items: center;
 
-	font-size: 10rem;
-	color: #ccc;
+	&::before {
+		content: '';
+		position: absolute;
+		width: 4%;
+		aspect-ratio: 1 / 1;
+		background-color: #ddd;
+		border-radius: 50%;
+	}
+
+	&::after {
+		content: '';
+		position: absolute;
+		width: 15%;
+		aspect-ratio: 1 / 1;
+		border-radius: 50%;
+		border: 2px solid #ddd;
+		animation: 4s ease-out 0s infinite tap-circle;
+	}
+}
+
+@keyframes tap-circle {
+	0% {
+		width: 15%;
+		opacity: 0;
+	}
+	100% {
+		width: 0%;
+		opacity: 1;
+	}
 }

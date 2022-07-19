@@ -3,6 +3,7 @@ import { TCanvas } from './three/TCanvas';
 
 class App {
 	private canvas: TCanvas
+	private clickElement?: HTMLDivElement
 
 	constructor() {
 		const parentNode = document.querySelector('body')!
@@ -14,7 +15,10 @@ class App {
 		window.addEventListener('beforeunload', () => {
 			this.dispose()
 		})
-		this.requestDeviceOrientation()
+		this.clickElement = document.querySelector<HTMLDivElement>('.orientation-permission')!
+		this.clickElement.onclick = () => {
+			this.requestDeviceOrientation()
+		}
 	}
 
 	private requestDeviceOrientation = () => {
@@ -26,12 +30,14 @@ class App {
 				.requestPermission()
 				.then((response: any) => {
 					if (response === 'granted') {
+						this.clickElement!.style.zIndex = '-10'
 						window.addEventListener('deviceorientation', this.handleDeviceorientation)
 					}
 				})
 				.catch(console.error)
 		} else {
 			// another
+			this.clickElement!.style.zIndex = '-10'
 			window.addEventListener('deviceorientation', this.handleDeviceorientation)
 		}
 	}
