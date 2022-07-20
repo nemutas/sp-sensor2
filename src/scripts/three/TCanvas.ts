@@ -21,6 +21,8 @@ export class TCanvas extends TCanvasBase {
 			this.setScene()
 			this.setModel()
 			this.setResizeCallback()
+			this.addEvent()
+			this.setDispose()
 			this.animate(this.update)
 		})
 	}
@@ -75,10 +77,32 @@ export class TCanvas extends TCanvasBase {
 		// this.gui.add(this.material!.uniforms.u_progress, 'value', 0, 1, 0.01).name('progress')
 	}
 
+	private addEvent = () => {
+		window.addEventListener('deviceorientation', this.handleOrientationchange)
+	}
+
+	private handleOrientationchange = () => {
+		const aspect = this.size.aspect
+		const _calcCoveredTextureScale = (uniformName: string) => {
+			const textureData = this.material!.uniforms[uniformName].value
+			this.calcCoveredTextureScale(textureData.texture, aspect, textureData.scale)
+		}
+		_calcCoveredTextureScale('u_image1')
+		_calcCoveredTextureScale('u_image2')
+		_calcCoveredTextureScale('u_noise')
+	}
+
+	private setDispose = () => {
+		this.disposeCallback = () => {
+			window.removeEventListener('deviceorientation', this.handleOrientationchange)
+		}
+	}
+
 	private update = () => {
 		// snsor angle constraints
 		// https://developer.mozilla.org/ja/docs/Web/Events/Orientation_and_motion_data_explained
-		const tiltX = sensorState.angle.y / (Math.PI / 2)
-		this.material!.uniforms.u_tilt.value = THREE.MathUtils.lerp(this.material!.uniforms.u_tilt.value, tiltX, 0.1)
+		let tiltX = sensorState.angle.y / 90
+		tiltX = THREE.MathUtils.clamp(tiltX, -1, 1)
+		this.material!.uniforms.u_tilt.value = THREE.MathUtils.lerp(this.material!.uniforms.u_tilt.value, tiltX, 0.05)
 	}
 }

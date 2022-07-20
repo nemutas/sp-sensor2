@@ -3,11 +3,16 @@ import { TCanvas } from './three/TCanvas';
 
 class App {
 	private canvas: TCanvas
-	private clickElement?: HTMLDivElement
+	private clickElement: HTMLDivElement
+	private debugElement: HTMLDivElement
 
 	constructor() {
 		const parentNode = document.querySelector('body')!
 		this.canvas = new TCanvas(parentNode)
+
+		this.clickElement = document.querySelector<HTMLDivElement>('.orientation-permission')!
+		this.debugElement = document.querySelector<HTMLDivElement>('.debug')!
+
 		this.addEvents()
 	}
 
@@ -15,7 +20,6 @@ class App {
 		window.addEventListener('beforeunload', () => {
 			this.dispose()
 		})
-		this.clickElement = document.querySelector<HTMLDivElement>('.orientation-permission')!
 		this.clickElement.onclick = () => {
 			this.requestDeviceOrientation()
 		}
@@ -23,29 +27,42 @@ class App {
 
 	private requestDeviceOrientation = () => {
 		// https://developer.apple.com/forums/thread/128376
+		// https://www.w3.org/TR/orientation-event/#description
 		const doe = DeviceOrientationEvent as any
 		if (doe && doe.requestPermission && typeof doe.requestPermission === 'function') {
 			// after ios13
-			doe
-				.requestPermission()
-				.then((response: any) => {
+			;(doe.requestPermission() as Promise<PermissionState>)
+				.then(response => {
 					if (response === 'granted') {
-						this.clickElement!.style.zIndex = '-10'
+						this.clickElement.style.zIndex = '-10'
 						window.addEventListener('deviceorientation', this.handleDeviceorientation)
 					}
 				})
 				.catch(console.error)
 		} else {
 			// another
-			this.clickElement!.style.zIndex = '-10'
+			this.clickElement.style.zIndex = '-10'
 			window.addEventListener('deviceorientation', this.handleDeviceorientation)
 		}
 	}
 
 	private handleDeviceorientation = (e: DeviceOrientationEvent) => {
-		const pi2 = Math.PI * 2
-		sensorState.angle = { x: (e.beta ?? 0) / pi2, y: (e.gamma ?? 0) / pi2, z: (e.alpha ?? 0) / pi2 }
+		// console.log(screen.orientation)
 		// console.log(e.beta, e.gamma, e.alpha)
+		// console.log(screen.orientation.angle)
+		// console.log(window.orientation)
+		// const orientation = navigator.userAgent.match(/(iPhone|iPod|iPad)/) ? window.orientation : screen.orientation.angle
+		const orientation = screen.orientation ? screen.orientation.angle : window.orientation
+		// console.log(orientation)
+		// ---------------------------------------
+		if (orientation === 0) {
+			sensorState.angle = { x: e.beta ?? 0, y: e.gamma ?? 0, z: e.alpha ?? 0 }
+		} else if (orientation === 90) {
+			sensorState.angle = { x: e.gamma ?? 0, y: (e.alpha ?? 0) - 90, z: e.beta ?? 0 }
+		} else if (orientation === -90 || orientation === 270) {
+			sensorState.angle = { x: e.gamma ?? 0, y: (e.alpha ?? 0) - 264, z: e.beta ?? 0 }
+		}
+		// this.debugElement.innerText = sensorState.angle.y.toString()
 	}
 
 	private dispose = () => {

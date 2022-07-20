@@ -21,8 +21,8 @@ void main() {
   vec4 noise = coveredTexture(u_noise);
 
   // float progress = u_progress * 2.0 - 1.0;
-  float progress = u_tilt * 0.1;
-  float p = smoothstep(progress, progress + 1.0, v_uv.x);
+  float progress = u_tilt;
+  float p = smoothstep(progress + 0.2, progress + 1.0, v_uv.x);
   p = p * 2.0 - 1.0;
   noise.r += p;
   float n = smoothstep(0.3, 0.7, noise.r);
