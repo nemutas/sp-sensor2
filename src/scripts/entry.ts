@@ -4,14 +4,14 @@ import { TCanvas } from './three/TCanvas';
 class App {
 	private canvas: TCanvas
 	private clickElement: HTMLDivElement
-	private debugElement: HTMLDivElement
+	// private debugElement: HTMLDivElement
 
 	constructor() {
 		const parentNode = document.querySelector('body')!
 		this.canvas = new TCanvas(parentNode)
 
 		this.clickElement = document.querySelector<HTMLDivElement>('.orientation-permission')!
-		this.debugElement = document.querySelector<HTMLDivElement>('.debug')!
+		// this.debugElement = document.querySelector<HTMLDivElement>('.debug')!
 
 		this.addEvents()
 	}
