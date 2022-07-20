@@ -47,14 +47,8 @@ class App {
 	}
 
 	private handleDeviceorientation = (e: DeviceOrientationEvent) => {
-		// console.log(screen.orientation)
-		// console.log(e.beta, e.gamma, e.alpha)
-		// console.log(screen.orientation.angle)
-		// console.log(window.orientation)
 		// const orientation = navigator.userAgent.match(/(iPhone|iPod|iPad)/) ? window.orientation : screen.orientation.angle
 		const orientation = screen.orientation ? screen.orientation.angle : window.orientation
-		// console.log(orientation)
-		// ---------------------------------------
 		if (orientation === 0) {
 			sensorState.angle = { x: e.beta ?? 0, y: e.gamma ?? 0, z: e.alpha ?? 0 }
 		} else if (orientation === 90) {
